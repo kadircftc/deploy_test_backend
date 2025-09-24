@@ -19,27 +19,18 @@ jobs:
         with:
           node-version: 20.19.5
 
-      # Backend bağımlılıklarını yükle
       - name: Install dependencies
-        run: npm install
-        working-directory: backend
+        run: npm install  
 
-      # Eğer build adımı varsa (TypeScript vb.)
-      - name: Build project
-        run: npm run build
-        working-directory: backend
-
-      # Backend kodlarını kopyala
       - name: Deploy to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: dev.reqspark.com
           username: deploy
           key: ${{ secrets.SSH_KEY }}
-          source: "backend/*"
+          source: "*" 
           target: ${{ github.ref == 'refs/heads/main' && '/var/www/mcp.prod/backend' || '/var/www/mcp.dev/backend' }}
 
-      # PM2 ile restart et
       - name: Restart Backend
         uses: appleboy/ssh-action@v0.1.10
         with:
