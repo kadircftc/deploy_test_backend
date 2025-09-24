@@ -1,16 +1,20 @@
+require('dotenv').config(); // .env dosyasını oku
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// JSON parse middleware
+// Port: önce -p argümanı, sonra process.env.PORT, sonra default 3000
+let PORT = process.env.PORT || 3000;
+const portArgIndex = process.argv.indexOf("-p");
+if (portArgIndex > -1) {
+  PORT = parseInt(process.argv[portArgIndex + 1]);
+}
+
 app.use(express.json());
 
-// Root endpoint
 app.get("/", (req, res) => {
   res.send("Hello World from Node.js 🚀");
 });
 
-// Example API endpoint
 app.get("/users", (req, res) => {
   res.json([
     { id: 1, name: "Kadir" },
@@ -19,7 +23,6 @@ app.get("/users", (req, res) => {
   ]);
 });
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`Server is test running on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
