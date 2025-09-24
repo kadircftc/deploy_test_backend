@@ -1,0 +1,53 @@
+name: Backend Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.5
+
+      # Backend bağımlılıklarını yükle
+      - name: Install dependencies
+        run: npm install
+        working-directory: backend
+
+      # Eğer build adımı varsa (TypeScript vb.)
+      - name: Build project
+        run: npm run build
+        working-directory: backend
+
+      # Backend kodlarını kopyala
+      - name: Deploy to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: dev.reqspark.com
+          username: deploy
+          key: ${{ secrets.SSH_KEY }}
+          source: "backend/*"
+          target: ${{ github.ref == 'refs/heads/main' && '/var/www/mcp.prod/backend' || '/var/www/mcp.dev/backend' }}
+
+      # PM2 ile restart et
+      - name: Restart Backend
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: dev.reqspark.com
+          username: deploy
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ github.ref == 'refs/heads/main' && '/var/www/mcp.prod/backend' || '/var/www/mcp.dev/backend' }}
+            npm install --production
+            pm2 restart ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }} || \
+            pm2 start server.js --name ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }} -- -p ${{ github.ref == 'refs/heads/main' && '3001' || '3000' }}
