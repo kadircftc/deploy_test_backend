@@ -44,6 +44,6 @@ jobs:
             PM2_CMD=pm2
 
             $PM2_CMD describe ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }} || \
-            $PM2_CMD start server.js --name ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }} -- -p ${{ github.ref == 'refs/heads/main' && '3001' || '3000' }}
+            $PM2_CMD start server.js --name ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }} -- -p ${{ github.ref == 'refs/heads/main' && '3002' || '3003' }}
 
             $PM2_CMD restart ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }}
