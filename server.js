@@ -21,5 +21,5 @@ app.get("/users", (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server is o running on http://localhost:${PORT}`);
+  console.log(`Server is test running on http://localhost:${PORT}`);
 });
