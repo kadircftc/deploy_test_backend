@@ -20,7 +20,7 @@ app.get("/users", (req, res) => {
     { id: 1, name: "Kadir" },
     { id: 2, name: "Eren" },
     { id: 3, name: "Ahmet" },
-    { id: 4, name: "Test" }
+    { id: 4, name: "Test 2" }
   ]);
 });
 
