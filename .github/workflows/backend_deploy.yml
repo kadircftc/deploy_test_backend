@@ -38,7 +38,9 @@ jobs:
           username: deploy
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ${{ github.ref == 'refs/heads/main' && '/var/www/mcp.prod/backend' || '/var/www/mcp.dev/backend' }}
-            npm install --production
-            pm2 restart ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }} || \
-            pm2 start server.js --name ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }} -- -p ${{ github.ref == 'refs/heads/main' && '3001' || '3000' }}
+          cd ${{ github.ref == 'refs/heads/main' && '/var/www/mcp.prod/backend' || '/var/www/mcp.dev/backend' }}
+          npm install --production
+          pm2 describe ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }} || \
+          pm2 start server.js --name ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }} -- -p ${{ github.ref == 'refs/heads/main' && '3001' || '3002' }} 
+          pm2 restart ${{ github.ref == 'refs/heads/main' && 'backend-prod' || 'backend-dev' }}
+
